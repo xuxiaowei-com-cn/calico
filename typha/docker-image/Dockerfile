@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-FROM scratch AS source
+ARG UBI_IMAGE
+FROM ${UBI_IMAGE}
 
 ARG TARGETARCH
 
@@ -20,8 +20,6 @@ COPY LICENSE /licenses/LICENSE
 
 COPY bin/calico-typha-${TARGETARCH} /usr/bin/calico-typha
 COPY typha.cfg /etc/calico/typha.cfg
-
-FROM calico/base
 
 ARG GIT_VERSION=unknown
 
@@ -32,8 +30,6 @@ LABEL release="1"
 LABEL summary="Calico Typha is a fan-out datastore proxy"
 LABEL vendor="Project Calico"
 LABEL version=${GIT_VERSION}
-
-COPY --from=source / /
 
 USER 999
 
