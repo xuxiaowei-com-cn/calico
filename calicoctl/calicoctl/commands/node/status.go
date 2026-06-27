@@ -21,6 +21,7 @@ import (
 	"net"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,7 +29,6 @@ import (
 
 	"github.com/docopt/docopt-go"
 	"github.com/olekukonko/tablewriter"
-	"github.com/shirou/gopsutil/process"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/projectcalico/calico/calicoctl/calicoctl/util"
@@ -65,7 +65,7 @@ Description:
 	enforceRoot()
 
 	// Go through running processes and check if `calico-felix` processes is not running
-	processes, err := process.Processes()
+	processes, err := listProcesses()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -106,7 +106,49 @@ Description:
 	return nil
 }
 
-func psContains(proc []string, procList []*process.Process) bool {
+// procInfo holds the PID of a running process.  CmdlineSlice reads its
+// command-line arguments from /proc/<pid>/cmdline.
+type procInfo struct {
+	Pid int
+}
+
+// CmdlineSlice returns the command-line arguments of the process by reading
+// the null-delimited /proc/<pid>/cmdline file.
+func (p *procInfo) CmdlineSlice() ([]string, error) {
+	data, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", p.Pid))
+	if err != nil {
+		return nil, err
+	}
+	parts := strings.Split(string(data), "\x00")
+	// Drop the trailing empty element that is typically present.
+	if len(parts) > 0 && parts[len(parts)-1] == "" {
+		parts = parts[:len(parts)-1]
+	}
+	return parts, nil
+}
+
+// listProcesses enumerates running processes by scanning /proc for numeric
+// directory entries.
+func listProcesses() ([]*procInfo, error) {
+	entries, err := os.ReadDir("/proc")
+	if err != nil {
+		return nil, err
+	}
+	var procs []*procInfo
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		pid, err := strconv.Atoi(e.Name())
+		if err != nil {
+			continue // not a PID directory
+		}
+		procs = append(procs, &procInfo{Pid: pid})
+	}
+	return procs, nil
+}
+
+func psContains(proc []string, procList []*procInfo) bool {
 	for _, p := range procList {
 		cmds, err := p.CmdlineSlice()
 		if err != nil {
