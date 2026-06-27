@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ARG UBI_IMAGE
-FROM alpine:3 AS builder
+FROM ${UBI_IMAGE} AS builder
 
 # Make sure the status and pprof files are owned by our user.
 RUN mkdir /status /profiles
