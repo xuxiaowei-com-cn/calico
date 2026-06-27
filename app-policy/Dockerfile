@@ -12,29 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ARG UBI_IMAGE
-FROM ${UBI_IMAGE} AS builder
-
-RUN mkdir -p /var/run/dikastes
-
-FROM scratch AS source
+FROM ${UBI_IMAGE}
 
 ARG BIN_DIR
 ARG TARGETARCH
-
-COPY LICENSE /licenses/LICENSE
-
-# Typical Linux systems start numbering human users at 1000, reserving 1-999
-# for services, so we pick 999 to be least likely to overlap.
-#
-# Precreate the /var/run/dikastes directory so that we don't need any elevated
-# permission to create the directory at runtime.
-COPY --chown=999 --from=builder /var/run/dikastes /var/run/dikastes/
-
-COPY ${BIN_DIR}/dikastes-${TARGETARCH} /dikastes
-COPY ${BIN_DIR}/healthz-${TARGETARCH} /healthz
-
-FROM ${UBI_IMAGE}
-
 ARG GIT_VERSION=unknown
 
 LABEL description="Calico Dikastes enables Application Layer Policy"
@@ -45,7 +26,17 @@ LABEL summary="Calico Dikastes enables Application Layer Policy"
 LABEL vendor="Project Calico"
 LABEL version=${GIT_VERSION}
 
-COPY --from=source / /
+COPY LICENSE /licenses/LICENSE
+
+# Typical Linux systems start numbering human users at 1000, reserving 1-999
+# for services, so we pick 999 to be least likely to overlap.
+#
+# Precreate the /var/run/dikastes directory so that we don't need any elevated
+# permission to create the directory at runtime.
+RUN mkdir -p /var/run/dikastes && chown 999:999 /var/run/dikastes
+
+COPY ${BIN_DIR}/dikastes-${TARGETARCH} /dikastes
+COPY ${BIN_DIR}/healthz-${TARGETARCH} /healthz
 
 USER 999
 
