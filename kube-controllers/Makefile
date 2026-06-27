@@ -74,9 +74,18 @@ endif
 $(BINDIR)/check-status-linux-$(ARCH): $(SRC_FILES)
 	$(call build_binary, ./cmd/check-status, $@)
 
+ifeq ($(ARCH),loong64)
+$(BINDIR)/kubectl-$(ARCH):
+	curl -sSf -L --retry 5 -o $(BINDIR)/kubernetes-client-linux-loong64.tar.gz https://cloud.loongnix.cn/releases/loongarch64/kubernetes/kubernetes/$(K8S_VERSION)/kubernetes-client-linux-loong64.tar.gz
+	tar -xzf $(BINDIR)/kubernetes-client-linux-loong64.tar.gz -C $(BINDIR) kubernetes/client/bin/kubectl
+	cp $(BINDIR)/kubernetes/client/bin/kubectl $@
+	rm -rf $(BINDIR)/kubernetes $(BINDIR)/kubernetes-client-linux-loong64.tar.gz
+	chmod +x $@
+else
 $(BINDIR)/kubectl-$(ARCH):
 	curl -sSf -L --retry 5 -o $@ https://dl.k8s.io/release/$(K8S_VERSION)/bin/linux/$(ARCH)/kubectl
 	chmod +x $@
+endif
 
 ###############################################################################
 # Building the image
