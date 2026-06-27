@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+ARG UBI_IMAGE
 FROM scratch AS source
 
 ARG BIN_DIR
@@ -19,7 +19,7 @@ ARG BIN_DIR
 COPY LICENSE /licenses/LICENSE
 COPY ${BIN_DIR} /opt/cni/bin/
 
-FROM calico/base
+FROM ${UBI_IMAGE}
 
 ARG GIT_VERSION=unknown
 
