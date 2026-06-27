@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-FROM alpine:3 AS builder
+ARG UBI_IMAGE
+FROM ${UBI_IMAGE} AS builder
 
 RUN mkdir -p /var/run/dikastes
 
@@ -33,7 +33,7 @@ COPY --chown=999 --from=builder /var/run/dikastes /var/run/dikastes/
 COPY ${BIN_DIR}/dikastes-${TARGETARCH} /dikastes
 COPY ${BIN_DIR}/healthz-${TARGETARCH} /healthz
 
-FROM calico/base
+FROM ${UBI_IMAGE}
 
 ARG GIT_VERSION=unknown
 
