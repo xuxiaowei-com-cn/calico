@@ -97,6 +97,9 @@ endif
 else ifeq ($(ARCH), $(filter $(ARCH),arm64))
 CGO_ENABLED=0
 REGISTRAR_BUILD_CMD=$(REGISTRAR_TIGERA_BUILD_CMD)
+else ifeq ($(ARCH), $(filter $(ARCH),loong64))
+CGO_ENABLED=0
+REGISTRAR_BUILD_CMD=$(REGISTRAR_TIGERA_BUILD_CMD)
 else ifeq ($(ARCH), $(filter $(ARCH),ppc64le))
 # Note: We must use single quotes on BUILD_PLATFORMS since it is to be nested within another double-quoted string.
 BUILD_PLATFORMS='linux ppc64le ppc64le'
