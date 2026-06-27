@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-FROM alpine:3 AS builder
+ARG UBI_IMAGE
+FROM ${UBI_IMAGE} AS builder
 
 # Make sure the status file is owned by our user.
 RUN mkdir /status
@@ -31,7 +31,7 @@ COPY ${BIN_DIR}/kubectl-${TARGETARCH} /usr/bin/kubectl
 COPY ${BIN_DIR}/kube-controllers-linux-${TARGETARCH} /usr/bin/kube-controllers
 COPY ${BIN_DIR}/check-status-linux-${TARGETARCH} /usr/bin/check-status
 
-FROM calico/base
+FROM ${UBI_IMAGE}
 
 ARG GIT_VERSION=unknown
 
