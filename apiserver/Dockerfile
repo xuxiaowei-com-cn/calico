@@ -1,3 +1,4 @@
+ARG UBI_IMAGE
 FROM scratch AS source
 
 ARG BIN_DIR
@@ -7,7 +8,7 @@ COPY LICENSE /licenses/LICENSE
 
 COPY ${BIN_DIR}/apiserver-${TARGETARCH} /code/apiserver
 
-FROM calico/base
+FROM ${UBI_IMAGE}
 
 ARG GIT_VERSION=unknown
 
