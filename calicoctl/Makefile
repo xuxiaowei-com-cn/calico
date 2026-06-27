@@ -58,6 +58,7 @@ build: bin/calicoctl-$(BUILDOS)-$(ARCH)
 # The supported different binary names. For each, ensure that an OS and ARCH is set
 bin/calicoctl-%-amd64: ARCH=amd64
 bin/calicoctl-%-arm64: ARCH=arm64
+bin/calicoctl-%-loong64: ARCH=loong64
 bin/calicoctl-%-ppc64le: ARCH=ppc64le
 bin/calicoctl-%-s390x: ARCH=s390x
 bin/calicoctl-darwin-amd64: BUILDOS=darwin ARCH=amd64
