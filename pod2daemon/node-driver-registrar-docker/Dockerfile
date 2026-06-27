@@ -19,7 +19,7 @@ ARG TARGETARCH
 
 COPY ${BIN_DIR}/node-driver-registrar-${TARGETARCH} /usr/bin/node-driver-registrar
 
-FROM calico/base
+FROM ${UBI_IMAGE}
 
 ARG GIT_VERSION=unknown
 ARG UPSTREAM_VER=unknown
