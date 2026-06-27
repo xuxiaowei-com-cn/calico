@@ -21,24 +21,6 @@ FROM scratch AS source
 ARG TARGETARCH
 ARG BIN_DIR
 
-COPY --from=ubi /bin/bash /bin/bash
-COPY --from=ubi /usr/bin/chmod /usr/bin/chmod
-COPY --from=ubi /usr/bin/coreutils /usr/bin/coreutils
-COPY --from=ubi /usr/bin/cp /usr/bin/cp
-COPY --from=ubi /usr/bin/echo /usr/bin/echo
-COPY --from=ubi /usr/bin/ls /usr/bin/ls
-COPY --from=ubi /usr/bin/mv /usr/bin/mv
-COPY --from=ubi /usr/bin/rm /usr/bin/rm
-
-COPY --from=ubi /lib64/libacl.so.1 /lib64/libacl.so.1
-COPY --from=ubi /lib64/libattr.so.1 /lib64/libattr.so.1
-COPY --from=ubi /lib64/libcap.so.2 /lib64/libcap.so.2
-COPY --from=ubi /lib64/libdl.so.2 /lib64/libdl.so.2
-COPY --from=ubi /lib64/libpcre2-8.so.0 /lib64/libpcre2-8.so.0
-COPY --from=ubi /lib64/librt.so.1 /lib64/librt.so.1
-COPY --from=ubi /lib64/libselinux.so.1 /lib64/libselinux.so.1
-COPY --from=ubi /lib64/libtinfo.so.6 /lib64/libtinfo.so.6
-
 COPY LICENSE /licenses/LICENSE
 
 COPY ${BIN_DIR}/flexvol-${TARGETARCH} /usr/local/bin/flexvol
