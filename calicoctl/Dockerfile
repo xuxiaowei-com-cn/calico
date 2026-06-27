@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+ARG UBI_IMAGE
 FROM scratch AS source
 
 ARG TARGETARCH
@@ -19,7 +19,7 @@ ARG TARGETARCH
 COPY LICENSE /licenses/LICENSE
 COPY bin/calicoctl-linux-${TARGETARCH} /usr/bin/calicoctl
 
-FROM calico/base
+FROM ${UBI_IMAGE}
 
 ARG GIT_VERSION=unknown
 
